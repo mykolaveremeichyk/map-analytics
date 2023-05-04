@@ -195,19 +195,47 @@ const novaPoshtaPoints = {
     67: [49.80237238416154, 24.01964432140614]
 }
 
+let map;
+
 function initMap() {
     // Create the map.
-    const map = new google.maps.Map(document.getElementById("map"), {
+    map = new google.maps.Map(document.getElementById("map"), {
         zoom: 13,
         center: { lat: 49.840469196135196, lng: 24.0288963004247 },
         mapTypeId: "roadmap",
     });
+
+    document
+        .getElementById("hide-existing-points")
+        .addEventListener("click", hideExistingPoints);
+    document
+        .getElementById("show-existing-points")
+        .addEventListener("click", showExistingPoint);
 
     initExistingPointsLayer(map);
     initPossiblePointLayer(map);
     // initNewGkPoligons(map);
     initMapOverlay(map);
     initNovaPoshtaPoints(map);
+}
+
+function showExistingPoint() {
+    setMapOnAll(map)
+}
+
+function hideExistingPoints() {
+    setMapOnAll(null)
+}
+
+const existingPointsAndCircles = []
+
+
+// Sets the map on all markers in the array.
+function setMapOnAll(map) {
+    for (let i = 0; i < existingPointsAndCircles.length; i++) {
+        existingPointsAndCircles[i][0].setMap(map);
+        existingPointsAndCircles[i][1].setMap(map);
+    }
 }
 
 function initExistingPointsLayer(map) {
@@ -220,11 +248,11 @@ function initExistingPointsLayer(map) {
             strokeWeight: 2,
             fillColor: "#FF0000",
             fillOpacity: 0.35,
-            map,
+            map: map,
             center: location,
             radius: 1000,
         });
-        new google.maps.Marker({
+        const marker = new google.maps.Marker({
             position: location,
             icon: {
                 path: google.maps.SymbolPath.CIRCLE,
@@ -233,6 +261,7 @@ function initExistingPointsLayer(map) {
             draggable: false,
             map: map,
         });
+        existingPointsAndCircles.push([cityCircle, marker])
     }
 
 }
@@ -293,7 +322,7 @@ function initMapOverlay(map) {
     };
 
     historicalOverlay = new google.maps.GroundOverlay(
-        "map3.png",
+        "images/map3.png",
         imageBounds
     );
 
@@ -307,7 +336,7 @@ function initMapOverlay(map) {
     };
 
     historicalOverlay1 = new google.maps.GroundOverlay(
-        "map4.png",
+        "images/map4.png",
         imageBounds1
     );
     historicalOverlay1.setMap(map);
@@ -319,7 +348,7 @@ function initNovaPoshtaPoints(map) {
         const location = { lat: novaPoshtaPoints[npPoint][0], lng: novaPoshtaPoints[npPoint][1]}
 
         const icon = {
-            url: "nova-poshta.png",
+            url: "images/nova-poshta.png",
             scaledSize: new google.maps.Size(20, 20), // scaled size
             origin: new google.maps.Point(0,0),
             anchor: new google.maps.Point(10, 10)
