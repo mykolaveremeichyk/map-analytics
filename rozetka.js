@@ -189,18 +189,25 @@ const gkList = {
     }
 }
 
+const novaPoshtaPoints = {
+    57: [49.78916819478422, 24.016658540833372],
+    4: [49.79731640272988, 24.006349126797257],
+    67: [49.80237238416154, 24.01964432140614]
+}
+
 function initMap() {
     // Create the map.
     const map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 12,
+        zoom: 13,
         center: { lat: 49.840469196135196, lng: 24.0288963004247 },
-        mapTypeId: "terrain",
+        mapTypeId: "roadmap",
     });
 
     initExistingPointsLayer(map);
     initPossiblePointLayer(map);
     // initNewGkPoligons(map);
     initMapOverlay(map);
+    initNovaPoshtaPoints(map);
 }
 
 function initExistingPointsLayer(map) {
@@ -305,6 +312,26 @@ function initMapOverlay(map) {
     );
     historicalOverlay1.setMap(map);
     
+}
+
+function initNovaPoshtaPoints(map) {
+    for (const npPoint in novaPoshtaPoints) {
+        const location = { lat: novaPoshtaPoints[npPoint][0], lng: novaPoshtaPoints[npPoint][1]}
+
+        const icon = {
+            url: "nova-poshta.png",
+            scaledSize: new google.maps.Size(20, 20), // scaled size
+            origin: new google.maps.Point(0,0),
+            anchor: new google.maps.Point(10, 10)
+        };
+
+        new google.maps.Marker({
+            position: location,
+            map,
+            icon: icon
+        });
+    }
+
 }
 
 window.initMap = initMap;
